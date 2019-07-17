@@ -1,4 +1,4 @@
-package com.epam.Exceptions;
+package com.epam.exceptions;
 
 public class InsufficientFundsException extends Exception {
     public InsufficientFundsException(String message) {

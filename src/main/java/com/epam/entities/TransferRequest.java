@@ -5,6 +5,9 @@ public class TransferRequest {
     private Long receiverId;
     private Long moneyAmount;
 
+    public TransferRequest() {
+    }
+
     public TransferRequest(Long senderId, Long receiverId, Long moneyAmount) {
         this.senderId = senderId;
         this.receiverId = receiverId;
@@ -33,5 +36,14 @@ public class TransferRequest {
 
     public void setMoneyAmount(Long moneyAmount) {
         this.moneyAmount = moneyAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "TransferRequest{" +
+                "senderId=" + senderId +
+                ", receiverId=" + receiverId +
+                ", moneyAmount=" + moneyAmount +
+                '}';
     }
 }

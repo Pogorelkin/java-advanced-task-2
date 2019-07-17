@@ -3,8 +3,11 @@ package com.epam.service;
 import com.epam.entities.TransferRequest;
 
 public interface RequestService {
-    TransferRequest receiveRequest();
-    public void sendRequest(TransferRequest request);
+    TransferRequest receiveRequest() throws InterruptedException;
+
+    public void sendRequest(TransferRequest request) throws InterruptedException;
+    public int getReceivedRequestsAmount();
+    public int getSentRequestsAmount();
 
 
 }
