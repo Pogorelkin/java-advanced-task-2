@@ -1,6 +1,6 @@
 package com.epam.dao.impl;
 
-import com.epam.dao.IOService;
+import com.epam.dao.IOAccountService;
 import com.epam.entities.UserAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +10,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class IOServiceImpl implements IOService {
-    protected UserAccount userAccount;
+public class IOAccountServiceImpl implements IOAccountService {
+    protected UserAccount userAccount = new UserAccount();
     private Path path;
-    private Logger logger = LoggerFactory.getLogger(IOServiceImpl.class);
+    private Logger logger = LoggerFactory.getLogger(IOAccountServiceImpl.class);
 
-    public IOServiceImpl(UserAccount userAccount) {
+    public IOAccountServiceImpl() {
+    }
+
+    public IOAccountServiceImpl(UserAccount userAccount) {
         this.userAccount = userAccount;
     }
 
@@ -44,5 +47,4 @@ public class IOServiceImpl implements IOService {
             }
         }
     }
-
 }

@@ -24,7 +24,7 @@ public class TransferRequestReceiverImpl implements TransferRequestReceiver {
     public void run() {
         while (receiveRequests) {
             try {
-                if (requestService.getReceivedRequestsAmount() == 999) {
+                if (requestService.getReceivedRequestsAmount() == 499) {
                     stopRecieve();
                 }
                 transferRequest = requestService.receiveRequest();
@@ -41,7 +41,7 @@ public class TransferRequestReceiverImpl implements TransferRequestReceiver {
         this.receiveRequests = receiveRequests;
     }
 
-    public void stopRecieve() {
+    private void stopRecieve() {
         setReceiveRequests(false);
     }
 }

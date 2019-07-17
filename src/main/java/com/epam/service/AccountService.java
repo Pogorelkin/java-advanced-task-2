@@ -12,6 +12,6 @@ public interface AccountService {
 
     List<UserAccount> getUsersList() throws IOException;
 
-    void printSummary(List<UserAccount> list);
+    void printUserSummary();
 
 }

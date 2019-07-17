@@ -11,7 +11,7 @@ public class PaymentControllerImpl implements PaymentController {
     }
 
     @Override
-    public void deposit(Long userIdSender, Long userIdReceiver, Long amount) throws InsufficientFundsException {
+    public synchronized void deposit(Long userIdSender, Long userIdReceiver, Long amount) throws InsufficientFundsException {
         depositService.deposit(userIdSender, userIdReceiver, amount);
     }
 }

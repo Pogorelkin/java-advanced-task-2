@@ -22,7 +22,8 @@ public class DepositServiceImpl implements DepositService {
     }
 
     @Override
-    public synchronized boolean deposit(Long userIdSender, Long userIdReceiver, Long amount) throws UserNotFoundException, InsufficientFundsException {
+    public synchronized boolean deposit(Long userIdSender, Long userIdReceiver, Long amount)
+            throws UserNotFoundException, InsufficientFundsException {
         UserAccount sender;
         UserAccount receiver;
         boolean isSuccessful = false;

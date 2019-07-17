@@ -3,12 +3,16 @@ package com.epam.entities;
 import java.io.Serializable;
 
 public class UserAccount implements Serializable {
-    private String firstName;
-    private String lastName;
-    private Long id;
-    private Long balance;
+    private String firstName = null;
+    private String lastName= null;
+    private Long id= null;
+    private Long balance= null;
 
-    public UserAccount(String firstName, String secondName) {
+    public UserAccount() {
+    }
+
+    public UserAccount(Long id, String firstName, String secondName) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = secondName;
     }

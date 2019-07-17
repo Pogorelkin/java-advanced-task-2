@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AccountServiceImpl implements AccountService {
@@ -53,9 +54,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void printSummary(List<UserAccount> list) {
+    public void printUserSummary() {
+        List<UserAccount> list = new ArrayList<>();
+        try {
+            list = getUsersList();
+        } catch (IOException e) {
+            logger.info(e.getMessage());
+        }
         Long sumMoney = 0L;
-        for (UserAccount userAccount: list) {
+        for (UserAccount userAccount : list) {
             logger.info(userAccount.toString());
             sumMoney += userAccount.getBalance();
         }
