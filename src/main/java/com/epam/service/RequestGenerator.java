@@ -3,17 +3,17 @@ package com.epam.service;
 import com.epam.entities.TransferRequest;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RequestGenerator {
     private Long sernderId;
     private Long receiverId;
     private Long amount;
-    private Random random = new Random();
 
-    public TransferRequest generateRequest(Long receiverNum) {
+    public TransferRequest generateRequest(Long sernderNum, Long receiverNum) {
         receiverId = receiverNum;
-        sernderId = Long.valueOf(random.nextInt(10) + 1);
-        amount = Long.valueOf(random.nextInt(1000) + 1);
+        sernderId = sernderNum;
+        amount = ThreadLocalRandom.current().nextLong(500);
         return new TransferRequest(sernderId,receiverId, amount);
     }
 }

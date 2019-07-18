@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TransferRequestSenderImpl implements TransferRequestSender {
     private RequestService requestService;
@@ -31,10 +32,9 @@ public class TransferRequestSenderImpl implements TransferRequestSender {
                     stopSending();
                     break;
                 }
-                request = requestGenerator.generateRequest(Long.valueOf(random.nextInt(9) + 1));
-                request.setSenderId(Long.valueOf(threadId));
+                request = requestGenerator.generateRequest(ThreadLocalRandom.current().nextLong(1,10),ThreadLocalRandom.current().nextLong(1,10));
                 requestService.sendRequest(request);
-                logger.info(new StringBuilder().append("Request").append(request.toString()).append("sent").toString());
+                logger.info(new StringBuilder().append("Request").append(request.toString()).append("was sent").toString());
             } catch (InterruptedException e) {
                 logger.info(e.getMessage());
             }

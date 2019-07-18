@@ -12,22 +12,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
     public static void main(String[] args) {
         Logger logger = LoggerFactory.getLogger(Main.class);
-        IOAccountService ioAccountService = new IOAccountServiceImpl();
-        AccountService accountService = new AccountServiceImpl(ioAccountService);
-        RequestService requestService = new RequestServiceImpl();
-        DepositService depositService = new DepositServiceImpl(accountService, ioAccountService);
-        RequestGenerator requestGenerator = new RequestGenerator();
         List<UserAccount> userList = new ArrayList<>();
-        Random random = new Random();
 
         userList.add(new UserAccount(1L, "Ivan", "Ivanov"));
         userList.add(new UserAccount(2L, "Petr", "Petrov"));
@@ -40,8 +35,15 @@ public class Main {
         userList.add(new UserAccount(9L, "Jakov", "Baks"));
         userList.add(new UserAccount(10L, "Iakow", "Heh"));
 
+        IOAccountService ioAccountService = new IOAccountServiceImpl(Paths.get("1.txt"));
+        AccountService accountService = new AccountServiceImpl(ioAccountService);
+        DepositService depositService = new DepositServiceImpl(accountService, ioAccountService);
+        RequestService requestService = new RequestServiceImpl();
+        RequestGenerator requestGenerator = new RequestGenerator();
+
+
         for (UserAccount user : userList) {
-            user.setBalance(random.nextLong());
+            user.setBalance(ThreadLocalRandom.current().nextLong(10000000));
             try {
                 ioAccountService.createAccountFile(user);
             } catch (IOException e) {

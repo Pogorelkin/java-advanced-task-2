@@ -29,6 +29,7 @@ public class TransferRequestReceiverImpl implements TransferRequestReceiver {
                 }
                 transferRequest = requestService.receiveRequest();
                 depositService.deposit(transferRequest.getSenderId(), transferRequest.getReceiverId(), transferRequest.getMoneyAmount());
+                logger.info(new StringBuilder().append("Request").append(transferRequest.toString()).append("was received").toString());
             } catch (InsufficientFundsException exc) {
                 logger.info(exc.getMessage());
             } catch (InterruptedException e) {

@@ -20,23 +20,22 @@ public class IOAccountServiceImpl implements IOAccountService {
     public IOAccountServiceImpl() {
     }
 
-    public IOAccountServiceImpl(UserAccount userAccount) {
-        this.userAccount = userAccount;
+    public IOAccountServiceImpl(Path path) {
+        this.path = path;
     }
 
     @Override
     public boolean isUserExists(Long userId) throws UserNotFoundException {
-        boolean exists;
+        boolean exists = false;
         try {
             Path filePath = Paths.get(userId + ".txt");
             if (filePath.toFile().exists() && !filePath.toFile().isDirectory()) {
                 exists = true;
             } else {
-                throw new UserNotFoundException("User (file) not found");
+                throw new UserNotFoundException(new StringBuilder().append("User (file)").append(filePath.toString()).append("not found").toString());
             }
         } catch (UserNotFoundException e) {
             logger.info(e.getMessage());
-            throw new UserNotFoundException("User (file) not found");
         }
         return exists;
     }
@@ -104,6 +103,8 @@ public class IOAccountServiceImpl implements IOAccountService {
             while ((resource = br.readLine()) != null) {
                 filenames.add(resource);
             }
+        } catch (NullPointerException e) {
+            logger.info(e.getMessage());
         }
         return filenames;
     }
@@ -134,10 +135,18 @@ public class IOAccountServiceImpl implements IOAccountService {
     @Override
     public List<UserAccount> getUsersList() throws IOException {
         try {
-            return getAccountsAsListByNameList(getAccountFileNamesByPath(this.path.toString()));
+            return getAccountsAsListByNameList(getAccountFileNamesByPath(path.toString()));
         } catch (IOException e) {
             logger.info(e.getMessage());
             throw e;
         }
+    }
+
+    public Path getPath() {
+        return path;
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
     }
 }
