@@ -22,25 +22,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Main {
     public static void main(String[] args) {
         Logger logger = LoggerFactory.getLogger(Main.class);
-        List<UserAccount> userList = new ArrayList<>();
-
-        userList.add(new UserAccount(1L, "Ivan", "Ivanov"));
-        userList.add(new UserAccount(2L, "Petr", "Petrov"));
-        userList.add(new UserAccount(3L, "Pyotr", "Petrov"));
-        userList.add(new UserAccount(4L, "Aleksandr", "Alexandrov"));
-        userList.add(new UserAccount(5L, "Alexandr", "Aleksandrow"));
-        userList.add(new UserAccount(6L, "Aleksandir", "Alexandriv"));
-        userList.add(new UserAccount(7L, "Jacob", "Alban"));
-        userList.add(new UserAccount(8L, "Yakov", "Yakovlev"));
-        userList.add(new UserAccount(9L, "Jakov", "Baks"));
-        userList.add(new UserAccount(10L, "Iakow", "Heh"));
 
         IOAccountService ioAccountService = new IOAccountServiceImpl(Paths.get("1.txt"));
         AccountService accountService = new AccountServiceImpl(ioAccountService);
         DepositService depositService = new DepositServiceImpl(accountService, ioAccountService);
         RequestService requestService = new RequestServiceImpl();
         RequestGenerator requestGenerator = new RequestGenerator();
-
 
         for (UserAccount user : userList) {
             user.setBalance(ThreadLocalRandom.current().nextLong(10000000));

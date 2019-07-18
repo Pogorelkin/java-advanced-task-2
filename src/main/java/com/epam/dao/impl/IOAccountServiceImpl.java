@@ -16,6 +16,7 @@ public class IOAccountServiceImpl implements IOAccountService {
     protected UserAccount userAccount = new UserAccount();
     private Path path;
     private Logger logger = LoggerFactory.getLogger(IOAccountServiceImpl.class);
+    private static final String ACCOUNTS_FOLDER_PATH = "src/main/resources/accounts";
 
     public IOAccountServiceImpl() {
     }
