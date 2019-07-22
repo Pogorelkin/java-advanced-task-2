@@ -1,8 +1,9 @@
-package com.epam.transactions.dao.impl;
+package com.epam.dao.impl;
 
 import com.epam.dao.IOAccountService;
 import com.epam.entities.UserAccount;
 import com.epam.exceptions.UserNotFoundException;
+import com.epam.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,15 +15,15 @@ import java.util.List;
 
 public class IOAccountServiceImpl implements IOAccountService {
     protected UserAccount userAccount = new UserAccount();
-    private Path path;
+    private AccountService accountService;
     private Logger logger = LoggerFactory.getLogger(IOAccountServiceImpl.class);
     private static final String ACCOUNTS_FOLDER_PATH = "src/main/resources/accounts";
 
     public IOAccountServiceImpl() {
     }
 
-    public IOAccountServiceImpl(Path path) {
-        this.path = path;
+    public IOAccountServiceImpl(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @Override
@@ -82,7 +83,7 @@ public class IOAccountServiceImpl implements IOAccountService {
     }
 
     @Override
-    public void rewriteAccount(UserAccount userAccount) throws IOException {
+    public void rewriteAccountFile(UserAccount userAccount) throws IOException {
         Path filePath = Paths.get(userAccount.getId() + ".txt");
         if (filePath.toFile().exists()) {
             try (FileOutputStream f = new FileOutputStream(new File(userAccount.getId() + ".txt"), false);
@@ -134,20 +135,14 @@ public class IOAccountServiceImpl implements IOAccountService {
     }
 
     @Override
-    public List<UserAccount> getUsersList() throws IOException {
-        try {
-            return getAccountsAsListByNameList(getAccountFileNamesByPath(path.toString()));
-        } catch (IOException e) {
-            logger.info(e.getMessage());
-            throw e;
-        }
-    }
-
-    public Path getPath() {
-        return path;
-    }
-
-    public void setPath(Path path) {
-        this.path = path;
+    public void rewriteUserAccounts(List<UserAccount> userAccounts) throws IOException {
+        userAccounts.forEach(userAccount1 -> {
+            try {
+                rewriteAccountFile(userAccount1);
+            } catch (IOException e) {
+                logger.info(e.getMessage());
+            }
+        });
     }
 }
+
