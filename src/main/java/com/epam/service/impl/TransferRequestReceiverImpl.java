@@ -24,7 +24,7 @@ public class TransferRequestReceiverImpl implements TransferRequestReceiver {
     public void run() {
         while (receiveRequests) {
             try {
-                if (requestService.getReceivedRequestsAmount() == 499) {
+                if (requestService.getReceivedRequestsAmount() == 999) {
                     stopRecieve();
                 }
                 transferRequest = requestService.receiveRequest();

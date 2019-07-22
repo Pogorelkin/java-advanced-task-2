@@ -6,11 +6,11 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RequestGenerator {
-    private Long sernderId;
-    private Long receiverId;
+    private Integer sernderId;
+    private Integer receiverId;
     private Long amount;
 
-    public TransferRequest generateRequest(Long sernderNum, Long receiverNum) {
+    public TransferRequest generateRequest(Integer sernderNum, Integer receiverNum) {
         receiverId = receiverNum;
         sernderId = sernderNum;
         amount = ThreadLocalRandom.current().nextLong(500);

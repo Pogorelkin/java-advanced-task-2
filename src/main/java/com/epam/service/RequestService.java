@@ -7,7 +7,7 @@ public interface RequestService {
 
     public void sendRequest(TransferRequest request) throws InterruptedException;
     public int getReceivedRequestsAmount();
-    public int getSentRequestsAmount();
+
 
 
 }

@@ -1,32 +1,32 @@
 package com.epam.entities;
 
 public class TransferRequest {
-    private Long senderId;
-    private Long receiverId;
+    private Integer senderId;
+    private Integer receiverId;
     private Long moneyAmount;
 
     public TransferRequest() {
     }
 
-    public TransferRequest(Long senderId, Long receiverId, Long moneyAmount) {
+    public TransferRequest(Integer senderId, Integer receiverId, Long moneyAmount) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.moneyAmount = moneyAmount;
     }
 
-    public Long getSenderId() {
+    public Integer getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(Long senderId) {
+    public void setSenderId(Integer senderId) {
         this.senderId = senderId;
     }
 
-    public Long getReceiverId() {
+    public Integer getReceiverId() {
         return receiverId;
     }
 
-    public void setReceiverId(Long receiverId) {
+    public void setReceiverId(Integer receiverId) {
         this.receiverId = receiverId;
     }
 

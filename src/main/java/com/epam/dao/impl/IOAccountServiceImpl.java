@@ -1,4 +1,4 @@
-package com.epam.dao.impl;
+package com.epam.transactions.dao.impl;
 
 import com.epam.dao.IOAccountService;
 import com.epam.entities.UserAccount;

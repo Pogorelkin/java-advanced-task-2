@@ -28,11 +28,12 @@ public class TransferRequestSenderImpl implements TransferRequestSender {
         long threadId = Thread.currentThread().getId();
         while (sendRequests) {
             try {
-                if (requestService.getReceivedRequestsAmount() == 500) {
+                if (requestService.getReceivedRequestsAmount() == 1000) {
                     stopSending();
                     break;
                 }
-                request = requestGenerator.generateRequest(ThreadLocalRandom.current().nextLong(1,10),ThreadLocalRandom.current().nextLong(1,10));
+
+                request = requestGenerator.generateRequest(ThreadLocalRandom.current().nextInt(1, 10), ThreadLocalRandom.current().nextInt(1, 10));
                 requestService.sendRequest(request);
                 logger.info(new StringBuilder().append("Request").append(request.toString()).append("was sent").toString());
             } catch (InterruptedException e) {

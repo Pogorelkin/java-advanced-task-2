@@ -6,12 +6,16 @@ import java.io.IOException;
 import java.util.List;
 
 public interface AccountService {
-    UserAccount getUser(Long userId) throws IOException;
+    UserAccount getUser(Integer userId);
 
     boolean isEnoughMoney(UserAccount userAccount, Long amount);
 
-    List<UserAccount> getUsersList() throws IOException;
+    List<UserAccount> getUsersList();
 
     void printUserSummary();
+
+    void addUserAccount(UserAccount account);
+
+    void rewriteAccount(UserAccount userAccount);
 
 }

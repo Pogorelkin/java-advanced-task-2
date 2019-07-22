@@ -3,7 +3,6 @@ package com.epam.dao;
 import com.epam.entities.UserAccount;
 import com.epam.enums.SomeNames;
 import com.epam.enums.SomeSurnames;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,24 +13,19 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
-public class InitialAccountFilesGenerator {
+public class InitialAccountGenerator {
     private static final String ACCOUNTS_FOLDER_PATH = "src/main/resources/accounts";
-    public static final long ACCOUNTS_COUNT = 10;
+    public static final int ACCOUNTS_COUNT = 10;
     List<UserAccount> userAccountList = new ArrayList<>();
-    private LongStream longStream = LongStream.range(1, ACCOUNTS_COUNT + 1L);
+    private IntStream intStream = IntStream.range(1, ACCOUNTS_COUNT + 1);
+    private SomeSurnames surname = SomeSurnames.IVANOV;
+    private SomeNames name = SomeNames.PYOTR;
 
-    Logger logger = LoggerFactory.getLogger(InitialAccountFilesGenerator.class);
 
-    private void cleanAccountDirectory() {
-        try {
-            FileUtils.cleanDirectory(new File(ACCOUNTS_FOLDER_PATH));
-        } catch (IOException exc) {
-            logger.info("Couldn't clean dir");
-        }
-    }
+    Logger logger = LoggerFactory.getLogger(InitialAccountGenerator.class);
 
     private void createUserAccountFile(UserAccount userAccount) {
         try (FileOutputStream f = new FileOutputStream(new File(userAccount.getId() + ".txt"));
@@ -43,14 +37,15 @@ public class InitialAccountFilesGenerator {
         }
     }
 
-    public void generateAccounFiles() {
-        cleanAccountDirectory();
-        AtomicLong index = new AtomicLong();
-        longStream.forEach(number -> createUserAccountFile
-                (new UserAccount(number,
-                        SomeNames.getRandomName(),
-                        SomeSurnames.getRandomSurname(),
-                        ThreadLocalRandom.current().nextLong(1000000L))));
+    public List<UserAccount> generateAccountList() {
+        intStream.forEach(number ->
+            userAccountList.add(
+                    (new UserAccount(number,
+                            name.getRandomName().getName(),
+                            surname.getRandomSurname().getSurname(),
+                            ThreadLocalRandom.current().nextLong(1000000L))))
+        );
+        return userAccountList;
     }
 
 

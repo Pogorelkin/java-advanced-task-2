@@ -5,13 +5,13 @@ import java.io.Serializable;
 public class UserAccount implements Serializable {
     private String firstName = null;
     private String lastName= null;
-    private Long id= null;
+    private Integer id= null;
     private Long balance= null;
 
     public UserAccount() {
     }
 
-    public UserAccount(Long id, String firstName, String secondName) {
+    public UserAccount(Integer id, String firstName, String secondName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = secondName;
@@ -23,7 +23,7 @@ public class UserAccount implements Serializable {
         this.balance = balance;
     }
 
-    public UserAccount(Long id, String firstName, String secondName, Long balance) {
+    public UserAccount(Integer id, String firstName, String secondName, Long balance) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = secondName;
@@ -46,11 +46,11 @@ public class UserAccount implements Serializable {
         this.lastName = lastName;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -60,5 +60,15 @@ public class UserAccount implements Serializable {
 
     public void setBalance(Long balance) {
         this.balance = balance;
+    }
+
+    @Override
+    public String toString() {
+        return "UserAccount{" +
+                " id=" + id + ' ' +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", balance=" + balance +
+                '}';
     }
 }

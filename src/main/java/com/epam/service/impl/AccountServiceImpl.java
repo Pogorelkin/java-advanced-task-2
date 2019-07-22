@@ -10,30 +10,18 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AccountServiceImpl implements AccountService {
-    private IOAccountService ioAccountService;
     private Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
-
-
-    public AccountServiceImpl(IOAccountService ioAccountService) {
-        this.ioAccountService = ioAccountService;
+    public AccountServiceImpl(List<UserAccount> userAccounts) {
+        this.userAccounts = userAccounts;
     }
+    private List<UserAccount> userAccounts = new ArrayList<>();
 
     @Override
-    public UserAccount getUser(Long userId) throws UserNotFoundException {
-        UserAccount userAccount = null;
-        try {
-            if (ioAccountService.isUserExists(userId)) {
-                userAccount = ioAccountService.getUserAccountById(userId);
-            } else {
-                throw new UserNotFoundException("user not found");
-            }
-            return userAccount;
-        } catch (IOException exception) {
-            logger.info(exception.getMessage());
-            throw new UserNotFoundException("User not found");
-        }
+    public UserAccount getUser(Integer userId) {
+        return userAccounts.get(userId);
     }
 
     @Override
@@ -44,28 +32,27 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<UserAccount> getUsersList() throws IOException {
-        try {
-            return ioAccountService.getUsersList();
-        } catch (IOException e) {
-            logger.info(e.getMessage());
-            throw e;
-        }
+    public List<UserAccount> getUsersList() {
+        return this.userAccounts;
     }
 
     @Override
     public void printUserSummary() {
-        List<UserAccount> list = new ArrayList<>();
-        try {
-            list = getUsersList();
-        } catch (IOException e) {
-            logger.info(e.getMessage());
-        }
         Long sumMoney = 0L;
-        for (UserAccount userAccount : list) {
+        for (UserAccount userAccount : userAccounts) {
             logger.info(userAccount.toString());
             sumMoney += userAccount.getBalance();
         }
-        logger.info(String.format("Total money amount on accounts is %d", sumMoney));
+        logger.info("Total money amount on accounts is " + sumMoney);
+    }
+
+    @Override
+    public void addUserAccount(UserAccount account) {
+        this.userAccounts.add(account);
+    }
+
+    @Override
+    public void rewriteAccount(UserAccount userAccount) {
+        userAccounts.set(userAccount.getId()-1, userAccount);
     }
 }

@@ -14,12 +14,13 @@ public interface IOAccountService {
 
     void createAccountFile(UserAccount userAccount) throws IOException;
 
-    void rewriteAccount(UserAccount userAccount) throws IOException;
+    void rewriteAccountFile(UserAccount userAccount) throws IOException;
 
     List<String> getAccountFileNamesByPath(String path) throws IOException;
 
     List<UserAccount> getAccountsAsListByNameList(List<String> filesList);
 
-    List<UserAccount> getUsersList() throws IOException;
+
+    void rewriteUserAccounts(List<UserAccount> userAccounts)throws IOException;
 
 }

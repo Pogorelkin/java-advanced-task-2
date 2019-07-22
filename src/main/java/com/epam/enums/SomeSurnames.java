@@ -18,7 +18,7 @@ public enum SomeSurnames {
         return surname;
     }
 
-    public SomeSurnames getRandomSurame(){
+    public SomeSurnames getRandomSurname(){
         return values()[ThreadLocalRandom.current().nextInt(values().length)];
     }
 }
