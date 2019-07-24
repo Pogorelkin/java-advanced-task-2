@@ -1,0 +1,148 @@
+package com.epam.dao.impl;
+
+import com.epam.dao.IOAccountService;
+import com.epam.entities.UserAccount;
+import com.epam.exceptions.UserNotFoundException;
+import com.epam.service.AccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+public class IOAccountServiceImpl implements IOAccountService {
+    protected UserAccount userAccount = new UserAccount();
+    private AccountService accountService;
+    private Logger logger = LoggerFactory.getLogger(IOAccountServiceImpl.class);
+    private static final String ACCOUNTS_FOLDER_PATH = "src/main/resources/accounts";
+
+    public IOAccountServiceImpl() {
+    }
+
+    public IOAccountServiceImpl(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    @Override
+    public boolean isUserExists(Long userId) throws UserNotFoundException {
+        boolean exists = false;
+        try {
+            Path filePath = Paths.get(userId + ".txt");
+            if (filePath.toFile().exists() && !filePath.toFile().isDirectory()) {
+                exists = true;
+            } else {
+                throw new UserNotFoundException(new StringBuilder().append("User (file)").append(filePath.toString()).append("not found").toString());
+            }
+        } catch (UserNotFoundException e) {
+            logger.info(e.getMessage());
+        }
+        return exists;
+    }
+
+    @Override
+    public UserAccount getUserAccountById(Long id) throws UserNotFoundException {
+        if (isUserExists(id)) {
+            try (FileInputStream fi = new FileInputStream(new File(id + ".txt"));
+                 ObjectInputStream oi = new ObjectInputStream(fi)) {
+                userAccount = (UserAccount) oi.readObject();
+            } catch (ClassNotFoundException e) {
+                logger.info(e.getMessage());
+            } catch (IOException exc) {
+                logger.info(exc.getMessage());
+                throw new UserNotFoundException("smth with IO");
+            }
+        }
+        return userAccount;
+    }
+
+    public UserAccount getUserAccountByName(String name) throws UserNotFoundException {
+        try (FileInputStream fi = new FileInputStream(name);
+             ObjectInputStream oi = new ObjectInputStream(fi)) {
+            userAccount = (UserAccount) oi.readObject();
+        } catch (ClassNotFoundException e) {
+            logger.info(e.getMessage());
+        } catch (IOException exc) {
+            logger.info(exc.getMessage());
+            throw new UserNotFoundException("smth with IO");
+        }
+        return userAccount;
+    }
+
+    @Override
+    public void createAccountFile(UserAccount userAccount) throws IOException {
+        Path filePath = Paths.get(userAccount.getId() + ".txt");
+        if (!filePath.toFile().exists()) {
+            try (FileOutputStream f = new FileOutputStream(new File(userAccount.getId() + ".txt"));
+                 ObjectOutputStream o = new ObjectOutputStream(f)) {
+                o.writeObject(userAccount);
+            }
+        }
+    }
+
+    @Override
+    public void rewriteAccountFile(UserAccount userAccount) throws IOException {
+        Path filePath = Paths.get(userAccount.getId() + ".txt");
+        if (filePath.toFile().exists()) {
+            try (FileOutputStream f = new FileOutputStream(new File(userAccount.getId() + ".txt"), false);
+                 ObjectOutputStream o = new ObjectOutputStream(f)) {
+                o.writeObject(userAccount);
+            } catch (FileNotFoundException e) {
+                logger.info(e.getMessage());
+            }
+        } else throw new UserNotFoundException("User not found");
+    }
+
+    @Override
+    public List<String> getAccountFileNamesByPath(String path) throws IOException {
+        List<String> filenames = new ArrayList<>();
+        try (
+                InputStream in = getResourceAsStream(path);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
+            String resource;
+            while ((resource = br.readLine()) != null) {
+                filenames.add(resource);
+            }
+        } catch (NullPointerException e) {
+            logger.info(e.getMessage());
+        }
+        return filenames;
+    }
+
+    private InputStream getResourceAsStream(String resource) {
+        final InputStream in
+                = getContextClassLoader().getResourceAsStream(resource);
+        return in == null ? getClass().getResourceAsStream(resource) : in;
+    }
+
+    private ClassLoader getContextClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
+    }
+
+    @Override
+    public List<UserAccount> getAccountsAsListByNameList(List<String> filesList) throws UserNotFoundException {
+        List<UserAccount> userAccountList = new ArrayList<>();
+        try {
+            for (String s : filesList) {
+                userAccountList.add(getUserAccountByName(s));
+            }
+        } catch (UserNotFoundException e) {
+            logger.info(e.getMessage());
+        }
+        return userAccountList;
+    }
+
+    @Override
+    public void rewriteUserAccounts(List<UserAccount> userAccounts) throws IOException {
+        userAccounts.forEach(userAccount1 -> {
+            try {
+                rewriteAccountFile(userAccount1);
+            } catch (IOException e) {
+                logger.info(e.getMessage());
+            }
+        });
+    }
+}
+
