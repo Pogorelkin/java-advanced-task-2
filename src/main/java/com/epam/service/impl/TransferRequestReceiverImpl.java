@@ -12,7 +12,6 @@ public class TransferRequestReceiverImpl implements TransferRequestReceiver {
     private RequestService requestService;
     private TransferRequest transferRequest;
     private Logger logger = LoggerFactory.getLogger(TransferRequestReceiverImpl.class);
-    private boolean receiveRequests = true;
     private DepositService depositService;
 
     public TransferRequestReceiverImpl(RequestService requestService, DepositService depositService) {
@@ -22,11 +21,8 @@ public class TransferRequestReceiverImpl implements TransferRequestReceiver {
 
     @Override
     public void run() {
-        while (receiveRequests) {
+        while (requestService.getReceivedRequestsAmount() < 1000) {
             try {
-                if (requestService.getReceivedRequestsAmount() == 999) {
-                    stopRecieve();
-                }
                 transferRequest = requestService.receiveRequest();
                 depositService.deposit(transferRequest.getSenderId(), transferRequest.getReceiverId(), transferRequest.getMoneyAmount());
                 logger.info(new StringBuilder().append("Request").append(transferRequest.toString()).append("was received").toString());
@@ -36,13 +32,5 @@ public class TransferRequestReceiverImpl implements TransferRequestReceiver {
                 logger.info(e.getMessage());
             }
         }
-    }
-
-    public void setReceiveRequests(boolean receiveRequests) {
-        this.receiveRequests = receiveRequests;
-    }
-
-    private void stopRecieve() {
-        setReceiveRequests(false);
     }
 }

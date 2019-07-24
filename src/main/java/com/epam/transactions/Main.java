@@ -15,11 +15,12 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 public class Main {
     public static void main(String[] args) {
         Logger logger = LoggerFactory.getLogger(Main.class);
-
+         final int pairsOfThreads = 10;
         InitialAccountGenerator accountGenerator = new InitialAccountGenerator();
         AccountService accountService = new AccountServiceImpl(accountGenerator.generateAccountList());
         IOAccountService ioAccountService = new IOAccountServiceImpl(accountService);
@@ -36,13 +37,20 @@ public class Main {
         accountService.printUserSummary();
 
         ExecutorService service = Executors.newFixedThreadPool(20);
-        service.submit(new TransferRequestReceiverImpl(requestService, depositService));
-        service.submit(new TransferRequestSenderImpl(requestService, requestGenerator));
+        IntStream.range(0,pairsOfThreads).forEach(threads -> {
+            service.submit(new TransferRequestReceiverImpl(requestService, depositService));
+            service.submit(new TransferRequestSenderImpl(requestService, requestGenerator));
+        });
+
 
         try {
-            service.awaitTermination(60, TimeUnit.SECONDS);
+            service.awaitTermination(15, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            logger.error("Coundn't transfers in 60 seconds" + e);
+            logger.error("Coundn't done transfers in 15 seconds" + e);
+        } finally {
+            if (!service.isTerminated()) {
+                service.shutdownNow();
+            }
         }
 
         for (UserAccount user : accountService.getUsersList()) {

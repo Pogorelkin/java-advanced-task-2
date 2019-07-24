@@ -52,4 +52,8 @@ public class RequestServiceImpl implements RequestService {
     public synchronized int getReceivedRequestsAmount() {
         return receivedRequestsAmount.get();
     }
+
+    public Queue<TransferRequest> getQueue() {
+        return queue;
+    }
 }
