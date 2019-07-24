@@ -13,16 +13,19 @@ public class TransferRequestReceiverImpl implements TransferRequestReceiver {
     private TransferRequest transferRequest;
     private Logger logger = LoggerFactory.getLogger(TransferRequestReceiverImpl.class);
     private DepositService depositService;
+    private int transfersAmount;
 
-    public TransferRequestReceiverImpl(RequestService requestService, DepositService depositService) {
+    public TransferRequestReceiverImpl(RequestService requestService, DepositService depositService, Integer transfersAmount) {
         this.requestService = requestService;
         this.depositService = depositService;
+        this.transfersAmount = transfersAmount;
     }
 
     @Override
     public void run() {
-        while (requestService.getReceivedRequestsAmount() < 1000) {
+        while (requestService.getReceivedRequestsAmount() < transfersAmount) {
             try {
+
                 transferRequest = requestService.receiveRequest();
                 depositService.deposit(transferRequest.getSenderId(), transferRequest.getReceiverId(), transferRequest.getMoneyAmount());
                 logger.info(new StringBuilder().append("Request").append(transferRequest.toString()).append("was received").toString());

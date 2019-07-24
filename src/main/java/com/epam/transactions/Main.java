@@ -21,11 +21,12 @@ public class Main {
     public static void main(String[] args) {
         Logger logger = LoggerFactory.getLogger(Main.class);
          final int pairsOfThreads = 10;
+         final int operationsAmount = 1000;
         InitialAccountGenerator accountGenerator = new InitialAccountGenerator();
         AccountService accountService = new AccountServiceImpl(accountGenerator.generateAccountList());
         IOAccountService ioAccountService = new IOAccountServiceImpl(accountService);
         DepositService depositService = new DepositServiceImpl(accountService);
-        RequestService requestService = new RequestServiceImpl();
+        RequestService requestService = new RequestServiceImpl(operationsAmount);
         RequestGenerator requestGenerator = new RequestGenerator();
         for (UserAccount user : accountService.getUsersList()) {
             try {
@@ -38,15 +39,15 @@ public class Main {
 
         ExecutorService service = Executors.newFixedThreadPool(20);
         IntStream.range(0,pairsOfThreads).forEach(threads -> {
-            service.submit(new TransferRequestReceiverImpl(requestService, depositService));
-            service.submit(new TransferRequestSenderImpl(requestService, requestGenerator));
+            service.submit(new TransferRequestReceiverImpl(requestService, depositService, operationsAmount));
+            service.submit(new TransferRequestSenderImpl(requestService, requestGenerator, operationsAmount));
         });
 
 
         try {
-            service.awaitTermination(15, TimeUnit.SECONDS);
+            service.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            logger.error("Coundn't done transfers in 15 seconds" + e);
+            logger.error("Coundn't done transfers in 5 seconds" + e);
         } finally {
             if (!service.isTerminated()) {
                 service.shutdownNow();

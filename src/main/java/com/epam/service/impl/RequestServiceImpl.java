@@ -4,6 +4,7 @@ import com.epam.entities.TransferRequest;
 import com.epam.service.RequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,6 +14,11 @@ public class RequestServiceImpl implements RequestService {
     private Queue<TransferRequest> queue = new ArrayBlockingQueue<>(50);
     AtomicInteger receivedRequestsAmount = new AtomicInteger(0);
     AtomicInteger sentRequestsAmount = new AtomicInteger(0);
+    private int transfersAmount;
+
+    public RequestServiceImpl(int transfersAmount) {
+        this.transfersAmount = transfersAmount;
+    }
 
     @Override
     public synchronized TransferRequest receiveRequest() throws InterruptedException {
@@ -25,11 +31,11 @@ public class RequestServiceImpl implements RequestService {
                 throw e;
             }
         }
-        if (receivedRequestsAmount.get() < 1000) {
-            request = queue.poll();
-            receivedRequestsAmount.getAndIncrement();
+        if (receivedRequestsAmount.get() < transfersAmount) {
+                request = queue.poll();
+                receivedRequestsAmount.getAndIncrement();
         }
-        notify();
+        notifyAll();
         return request;
     }
 
@@ -42,15 +48,18 @@ public class RequestServiceImpl implements RequestService {
                 throw exc;
             }
         }
-        if (sentRequestsAmount.get() < 1000) {
+        if (sentRequestsAmount.get() < transfersAmount) {
             queue.add(request);
-            sentRequestsAmount.getAndIncrement();
-        }
-        notify();
+            sentRequestsAmount.getAndIncrement();}
+        notifyAll();
     }
 
-    public synchronized int getReceivedRequestsAmount() {
+    public int getReceivedRequestsAmount() {
         return receivedRequestsAmount.get();
+    }
+
+    public int getSentRequestsAmount() {
+        return sentRequestsAmount.get();
     }
 
     public Queue<TransferRequest> getQueue() {
